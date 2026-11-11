@@ -1,0 +1,11 @@
+[all]
+localhost ansible_connection=local
+
+[docker_hosts]
+localhost
+
+[jenkins_server]
+localhost
+
+[monitoring]
+localhost
