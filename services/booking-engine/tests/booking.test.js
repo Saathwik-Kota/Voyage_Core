@@ -3,6 +3,43 @@ const app = require('../src/index');
 
 describe('Booking Engine Service', () => {
   let travelId;
+  let destinationId;
+
+  describe('GET /health', () => {
+    it('should return healthy status', async () => {
+      const res = await request(app).get('/health');
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe('healthy');
+    });
+  });
+
+  describe('Destinations Management', () => {
+    it('should create a new destination', async () => {
+      const res = await request(app)
+        .post('/api/destinations')
+        .send({
+          name: 'Paris',
+          country: 'France',
+          city: 'Paris',
+          description: 'City of Lights',
+          imageUrl: 'https://example.com/paris.jpg'
+        });
+      expect(res.statusCode).toBe(201);
+      expect(res.body).toHaveProperty('id');
+      destinationId = res.body.id;
+    });
+
+    it('should get all destinations', async () => {
+      const res = await request(app).get('/api/destinations');
+      expect(res.statusCode).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+    });
+
+    it('should delete destination', async () => {
+      const res = await request(app).delete(`/api/destinations/${destinationId}`);
+      expect(res.statusCode).toBe(200);
+    });
+  });
 
   describe('POST /api/travels', () => {
     it('should create a new travel', async () => {

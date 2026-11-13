@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../src/index');
 
 describe('Identity Manager Service', () => {
+  let authToken;
+
   describe('POST /api/auth/register', () => {
     it('should register a new user', async () => {
       const res = await request(app)
@@ -14,6 +16,7 @@ describe('Identity Manager Service', () => {
         });
       expect(res.statusCode).toBe(201);
       expect(res.body).toHaveProperty('token');
+      authToken = res.body.token;
     });
 
     it('should reject invalid email', async () => {
@@ -34,8 +37,8 @@ describe('Identity Manager Service', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'admin@travel.com',
-          password: 'Admin@123'
+          email: 'test@example.com',
+          password: 'Test@1234'
         });
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty('token');
@@ -45,9 +48,24 @@ describe('Identity Manager Service', () => {
       const res = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'admin@travel.com',
+          email: 'test@example.com',
           password: 'wrongpassword'
         });
+      expect(res.statusCode).toBe(401);
+    });
+  });
+
+  describe('POST /api/auth/verify', () => {
+    it('should verify valid token', async () => {
+      const res = await request(app)
+        .post('/api/auth/verify')
+        .set('Authorization', `Bearer ${authToken}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty('user');
+    });
+
+    it('should reject missing token', async () => {
+      const res = await request(app).post('/api/auth/verify');
       expect(res.statusCode).toBe(401);
     });
   });

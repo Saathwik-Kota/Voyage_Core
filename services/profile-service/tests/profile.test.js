@@ -4,6 +4,14 @@ const app = require('../src/index');
 describe('Profile Service', () => {
   let userId;
 
+  describe('GET /health', () => {
+    it('should return healthy status', async () => {
+      const res = await request(app).get('/health');
+      expect(res.statusCode).toBe(200);
+      expect(res.body.status).toBe('healthy');
+    });
+  });
+
   describe('POST /api/users', () => {
     it('should create a new user', async () => {
       const res = await request(app)
