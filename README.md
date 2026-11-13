@@ -1,6 +1,6 @@
 # VoyageCore: Distributed Polyglot Microservices Engine
 
-**Architect & Author**: Saathwik Kota  
+**Architect & Author**: Saathwik Reddy Kota  
 
 ---
 
